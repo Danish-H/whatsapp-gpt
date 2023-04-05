@@ -116,7 +116,7 @@ client.on('message_create', async msg => {
             else if (cmd == "dalle" && config.enabled_commands.includes("dalle")) {
                 let dallePrompt = args.join(' ');
                 let dalleSize = "256x256";
-                let price = "$0.016 ~ Rs 5";
+                let price = "$0.016 ≈ Rs 5";
                 
                 if (args[0] == "256") {
                     args.shift();
@@ -125,12 +125,12 @@ client.on('message_create', async msg => {
                     args.shift();
                     dallePrompt = args.join(' ');
                     dalleSize = "512x512";
-                    price = "$0.018 ~ Rs 5.5";
+                    price = "$0.018 ≈ Rs 5.5";
                 } else if (args[0] == "1024") {
                     args.shift();
                     dallePrompt = args.join(' ');
                     dalleSize = "1024x1024";
-                    price = "$0.02 ~ Rs 6";
+                    price = "$0.02 ≈ Rs 6";
                 }
 
                 try {
