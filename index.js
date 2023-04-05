@@ -52,8 +52,9 @@ client.on('message_create', async msg => {
 
                 if (config.enabled_commands.includes("gpt3"))    { count++; response += `${count}. *${config.prefix}gpt3* <prompt>\n`; }
                 if (config.enabled_commands.includes("gpt4"))    { count++; response += `${count}. *${config.prefix}gpt4* <prompt>\n`; }
-                if (config.enabled_commands.includes("dalle"))   { count++; response += `${count}. *${config.prefix}dalle* <prompt>\n`; }
+                if (config.enabled_commands.includes("dalle"))   { count++; response += `${count}. *${config.prefix}dalle* [256|512|1024] <prompt>\n`; }
                 if (config.enabled_commands.includes("sticker")) { count++; response += `${count}. *${config.prefix}sticker* <prompt>\n`; }
+                response += "\n<> - required\n[] - optional";
 
                 await msg.reply(response);
             } else if (cmd == "gpt3" && config.enabled_commands.includes("gpt3")) {
@@ -97,20 +98,37 @@ client.on('message_create', async msg => {
                     await msg.reply(config.error);
                 }
             } else if (cmd == "dalle" && config.enabled_commands.includes("dalle")) {
-                const dallePrompt = args.join(' ');
+                let dallePrompt = args.join(' ');
+                let dalleSize = "256x256";
+                let price = "$0.016 ~ Rs 5";
+                
+                if (args[0] == "256") {
+                    args.slice(1);
+                    dallePrompt = args.join(' ');
+                } else if (args[0] == "512") {
+                    args.slice(1);
+                    dallePrompt = args.join(' ');
+                    dalleSize = "512x512";
+                    price = "$0.018 ~ Rs 5.5";
+                } else if (args[0] == "1024") {
+                    args.slice(1);
+                    dallePrompt = args.join(' ');
+                    dalleSize = "1024x1024";
+                    price = "$0.02 ~ Rs 6";
+                }
 
                 try {
                     const response = await openai.createImage({
                         prompt: dallePrompt,
                         n: 1,
-                        size: "256x256",
+                        size: dalleSize,
                     });
                     
                     const image_url = response.data.data[0].url
                     console.log(image_url)
                     const image = await MessageMedia.fromUrl(image_url);
 
-                    await msg.reply(image, null, { caption: `*Price:* $0.016 ~ Rs 5\n${dallePrompt}` });
+                    await msg.reply(image, null, { caption: `*Price:* ${price}\n${dallePrompt}` });
                 } catch(error) {
                     if (error.response) {
                         console.error(error.response.status, error.response.data);
