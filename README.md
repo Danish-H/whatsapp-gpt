@@ -45,6 +45,7 @@ The existence of certain keywords can trigger events. For example, if the word '
     "enabled_triggers": [
         "fire"
     ],
+    "ops": [],
     "whitelist": [],
     "error": "There was an error! Please try again later.",
     "initial_prompt": "You are WhatsAppGPT bot written by Danish Humair."
