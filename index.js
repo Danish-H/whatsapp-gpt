@@ -1,4 +1,4 @@
-console.log("Copyright 2023 Danish Humair. All rights reserved.");
+console.log("Copyright 2023 Danish Humair. All rights reserved.\nThis program is only for educational purposes!\n");
 
 const config = require("./config.json");
 const qrcode = require('qrcode-terminal');
@@ -19,7 +19,7 @@ client.on('qr', qr => {
 });
 
 client.on('ready', () => {
-    console.log("(!) Client is ready!");
+    console.log(`\n(!) Client is ready!\nPrefix: ${config.prefix}\nEnabled triggers: ${config.enabled_triggers}\nEnabled commands: ${config.enabled_commands}\nWhitelist: ${config.whitelist}\nError: ${config.error}\nInitial prompt: ${config.initial_prompt}\n`);
 });
 
 client.initialize();
@@ -44,7 +44,7 @@ client.on('message_create', async msg => {
             const [cmd, ...args] = msg.body.replace(config.prefix, '').split(" ");
             
             console.log("Command: "+cmd);
-            console.log("Args:"+args);
+            console.log("Args: "+args);
 
             if (cmd == "help" && config.enabled_commands.includes("help")) {
                 let response = "Commands you can use:\n\n";
