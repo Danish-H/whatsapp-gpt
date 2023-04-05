@@ -110,8 +110,7 @@ client.on('message_create', async msg => {
                     console.log(image_url)
                     const image = await MessageMedia.fromUrl(image_url);
 
-                    await msg.reply(`*Price:* $0.016 ~ Rs 5\n${dallePrompt}`);
-                    await client.sendMessage(msg.from, image);
+                    await msg.reply(image, null, { caption: `*Price:* $0.016 ~ Rs 5\n${dallePrompt}` });
                 } catch(error) {
                     if (error.response) {
                         console.error(error.response.status, error.response.data);
