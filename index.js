@@ -103,15 +103,15 @@ client.on('message_create', async msg => {
                 let price = "$0.016 ~ Rs 5";
                 
                 if (args[0] == "256") {
-                    args.slice(1);
+                    args.shift();
                     dallePrompt = args.join(' ');
                 } else if (args[0] == "512") {
-                    args.slice(1);
+                    args.shift();
                     dallePrompt = args.join(' ');
                     dalleSize = "512x512";
                     price = "$0.018 ~ Rs 5.5";
                 } else if (args[0] == "1024") {
-                    args.slice(1);
+                    args.shift();
                     dallePrompt = args.join(' ');
                     dalleSize = "1024x1024";
                     price = "$0.02 ~ Rs 6";
