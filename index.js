@@ -180,7 +180,7 @@ client.on('message_create', async msg => {
                 }
             }
 
-            else if (cmd == "clear" && config.enabled_commands.includes("clear")) {
+            else if (cmd == "clear" && config.enabled_commands.includes("reply")) {
                 if (authorsQueue.includes(msg.author)) {
                     messagesQueue.splice(authorsQueue.indexOf(msg.author), 1);
                     authorsQueue.splice(authorsQueue.indexOf(msg.author), 1);

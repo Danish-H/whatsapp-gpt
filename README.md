@@ -33,7 +33,7 @@ The existence of certain keywords can trigger events. For example, if the word '
         "min": 1,
         "max": 3
     },
-    "enabled_commands": ["gpt3", "gpt4", "reply", "help", "dalle", "sticker"],
+    "enabled_commands": ["gpt3", "gpt4", "reply", "clear", "help", "dalle", "sticker"],
     "enabled_triggers": ["fire"],
     "whitelist": [],
     "error": "There was an error! Please try again later.",
