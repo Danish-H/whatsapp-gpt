@@ -10,16 +10,25 @@ const client = new Client({
 });
 
 function randomnaturalDelay(min, max) {
-    return Math.round(min*1000 + (Math.random()*(max-min)*1000))
+    currentProcesses++;
+    delay = Math.round(min*1000 + (Math.random()*(max-min+currentProcesses)*1000));
+    console.log('Delaying for '+delay+'ms...');
+    return delay;
 }
 
 function naturalDelay() {
     return new Promise(resolve => {
         setTimeout(() => {
-            console.log('Delaying for '+delay+'ms...')
+            currentProcesses--;
             resolve();
         }, delay=randomnaturalDelay(config.naturalDelay.min, config.naturalDelay.max))
     })
+}
+
+function msgLog(msg, out="") {
+    if (out != "") { console.log(out); }
+    console.log(`[${msg.timestamp}] [CID:${msg.from}] [T:${msg.type}] [M:${msg.hasMedia}] ${msg.author}: ${msg.body}`);
+    console.log("Current processes: "+currentProcesses);
 }
 
 client.on('qr', qr => {
@@ -43,19 +52,19 @@ const openai = new OpenAIApi(configuration);
 let stickerQueue = [];
 let authorsQueue = [];
 let messagesQueue = [];
+let currentProcesses = 0;
 
 client.on('message_create', async msg => {
     if (!config.whitelist.length || config.whitelist.includes(msg.from)) {
-        console.log(`[${msg.timestamp}] [CID:${msg.from}] [T:${msg.type}] [M:${msg.hasMedia}] ${msg.author}: ${msg.body}`);
-
         if (config.enabled_triggers.includes("fire") && msg.body.toLowerCase().includes("fire")) {
-            console.log("Reacting with fire emoji...");
+            console.log("[!] Reacting with fire emoji...");
             await naturalDelay();
             await msg.react("🔥");
         }
 
         if (msg.hasMedia && msg.type == "image") {
             if (stickerQueue.includes(msg.author)) {
+                msgLog(msg, "[!] Received image for sticker");
                 stickerQueue.splice(stickerQueue.indexOf(msg.author), 1);
                 const image = await msg.downloadMedia();
                 await naturalDelay();
@@ -64,10 +73,9 @@ client.on('message_create', async msg => {
         }
 
         if (msg.body.startsWith(config.prefix)) {
+            msgLog(msg, "[!] Received potential command");
             const [cmd, ...args] = msg.body.replace(config.prefix, '').split(" ");
-            
-            console.log("Command: "+cmd);
-            console.log("Args: "+args);
+            console.log("Command: "+cmd+"\tArgs: "+args.join(' '));
 
             if (cmd == "help" && config.enabled_commands.includes("help")) {
                 let response = "Commands you can use:\n\n";
@@ -83,6 +91,13 @@ client.on('message_create', async msg => {
 
                 await naturalDelay();
                 await msg.reply(response);
+            }
+
+            else if (cmd == "ping" && (config.enabled_commands.includes("ping") || config.ops.includes(msg.author))) {
+                console.log("[!] Starting delay check");
+                console.log("<request>")
+                await naturalDelay();
+                await console.log("<response>");
             }
             
             else if (cmd == "gpt3" && config.enabled_commands.includes("gpt3")) {
@@ -264,6 +279,18 @@ client.on('message_create', async msg => {
                         await naturalDelay();
                         await msg.reply(config.error);
                     }
+                } else if (msg.hasQuotedMsg) {
+                    console.log("Quote detected!");
+                    const quote = await msg.getQuotedMessage();
+                    if (quote.hasMedia && quote.type == "image") {
+                        console.log("Image detected!");
+                        const image = await quote.downloadMedia();
+                        await naturalDelay();
+                        await msg.reply(image, null, { sendMediaAsSticker: true });
+                    } else {
+                        await naturalDelay();
+                        await msg.reply("That message doesn't contain an image! Please use *!help* for more information.")
+                    }
                 } else {
                     if (!stickerQueue.includes(msg.author)) {
                         stickerQueue.push(msg.author);
@@ -272,6 +299,7 @@ client.on('message_create', async msg => {
                     await naturalDelay();
                     await msg.reply(`Send an image now to turn it into a sticker, otherwise use *${config.prefix}sticker <prompt>* to generate one`);
                 }
+
             }
         }
     }
