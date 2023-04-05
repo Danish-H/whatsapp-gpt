@@ -31,6 +31,8 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration);
 
+let stickerQueue = [];
+
 client.on('message_create', async msg => {
     if (!config.whitelist.length || config.whitelist.includes(msg.from)) {
         console.log(`[${msg.timestamp}] [CID:${msg.from}] [T:${msg.type}] [M:${msg.hasMedia}] ${msg.author}: ${msg.body}`);
@@ -38,6 +40,14 @@ client.on('message_create', async msg => {
         if (config.enabled_triggers.includes("fire") && msg.body.toLowerCase().includes("fire")) {
             console.log("Reacting with fire emoji...");
             await msg.react("🔥");
+        }
+
+        if (msg.hasMedia && msg.type == "image") {
+            if (stickerQueue.includes(msg.author)) {
+                stickerQueue.splice(stickerQueue.indexOf(msg.author), 1)
+                const image = await msg.downloadMedia();
+                await msg.reply(image, null, { sendMediaAsSticker: true });
+            }
         }
 
         if (msg.body.startsWith(config.prefix)) {
@@ -53,11 +63,13 @@ client.on('message_create', async msg => {
                 if (config.enabled_commands.includes("gpt3"))    { count++; response += `${count}. *${config.prefix}gpt3* <prompt>\n`; }
                 if (config.enabled_commands.includes("gpt4"))    { count++; response += `${count}. *${config.prefix}gpt4* <prompt>\n`; }
                 if (config.enabled_commands.includes("dalle"))   { count++; response += `${count}. *${config.prefix}dalle* [256|512|1024] <prompt>\n`; }
-                if (config.enabled_commands.includes("sticker")) { count++; response += `${count}. *${config.prefix}sticker* <prompt>\n`; }
+                if (config.enabled_commands.includes("sticker")) { count++; response += `${count}. *${config.prefix}sticker* [prompt]\n`; }
                 response += "\n<> - required\n[] - optional";
 
                 await msg.reply(response);
-            } else if (cmd == "gpt3" && config.enabled_commands.includes("gpt3")) {
+            }
+            
+            else if (cmd == "gpt3" && config.enabled_commands.includes("gpt3")) {
                 const gptMessages = [
                     { role: "system", content: config.initial_prompt },
                     { role: "user", content: args.join(' ') }
@@ -77,7 +89,9 @@ client.on('message_create', async msg => {
                     }
                     await msg.reply(config.error);
                 }
-            } else if (cmd == "gpt4" && config.enabled_commands.includes("gpt4")) {
+            }
+            
+            else if (cmd == "gpt4" && config.enabled_commands.includes("gpt4")) {
                 const gptMessages = [
                     { role: "system", content: config.initial_prompt },
                     { role: "user", content: args.join(' ') }
@@ -97,7 +111,9 @@ client.on('message_create', async msg => {
                     }
                     await msg.reply(config.error);
                 }
-            } else if (cmd == "dalle" && config.enabled_commands.includes("dalle")) {
+            }
+            
+            else if (cmd == "dalle" && config.enabled_commands.includes("dalle")) {
                 let dallePrompt = args.join(' ');
                 let dalleSize = "256x256";
                 let price = "$0.016 ~ Rs 5";
@@ -137,29 +153,43 @@ client.on('message_create', async msg => {
                     }
                     await msg.reply(config.error);
                 }
-            } else if (cmd == "sticker" && config.enabled_commands.includes("sticker")) {
-                const dallePrompt = args.join(' ');
-
-                try {
-                    const response = await openai.createImage({
-                        prompt: dallePrompt,
-                        n: 1,
-                        size: "256x256",
-                    });
-
-                    let image_url = response.data.data[0].url;
-                    console.log(image_url)
-                    const image = await MessageMedia.fromUrl(image_url);
-
-                    await msg.reply(`*Price:* $0.016 ≈ ₨ 5\n${dallePrompt}`);
-                    await client.sendMessage(msg.from, image, { sendMediaAsSticker: true });
-                } catch(error) {
-                    if (error.response) {
-                        console.error(error.response.status, error.response.data);
-                    } else {
-                        console.error(`Error with OpenAI API request: ${error.message}`);
+            }
+            
+            else if (cmd == "sticker" && config.enabled_commands.includes("sticker")) {
+                if (args.length) {
+                    if (stickerQueue.includes(msg.author)) {
+                        stickerQueue.splice(stickerQueue.indexOf(msg.author), 1)
                     }
-                    await msg.reply(config.error);
+
+                    const dallePrompt = args.join(' ');
+
+                    try {
+                        const response = await openai.createImage({
+                            prompt: dallePrompt,
+                            n: 1,
+                            size: "256x256",
+                        });
+
+                        let image_url = response.data.data[0].url;
+                        console.log(image_url)
+                        const image = await MessageMedia.fromUrl(image_url);
+
+                        await msg.reply(`*Price:* $0.016 ≈ ₨ 5\n${dallePrompt}`);
+                        await client.sendMessage(msg.from, image, { sendMediaAsSticker: true });
+                    } catch(error) {
+                        if (error.response) {
+                            console.error(error.response.status, error.response.data);
+                        } else {
+                            console.error(`Error with OpenAI API request: ${error.message}`);
+                        }
+                        await msg.reply(config.error);
+                    }
+                } else {
+                    if (!stickerQueue.includes(msg.author)) {
+                        stickerQueue.push(msg.author);
+                    }
+
+                    msg.reply(`Send an image now to turn it into a sticker, otherwise use *${config.prefix}sticker <prompt>* to generate one`);
                 }
             }
         }
