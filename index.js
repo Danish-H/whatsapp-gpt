@@ -9,8 +9,17 @@ const client = new Client({
     authStrategy: new LocalAuth()
 });
 
-function randomDelay(min, max) {
+function randomnaturalDelay(min, max) {
     return Math.round(min*1000 + (Math.random()*(max-min)*1000))
+}
+
+function naturalDelay() {
+    return new Promise(resolve => {
+        setTimeout(() => {
+            console.log('Delaying for '+delay+'ms...')
+            resolve();
+        }, delay=randomnaturalDelay(2, 5))
+    })
 }
 
 client.on('qr', qr => {
@@ -41,6 +50,7 @@ client.on('message_create', async msg => {
 
         if (config.enabled_triggers.includes("fire") && msg.body.toLowerCase().includes("fire")) {
             console.log("Reacting with fire emoji...");
+            await naturalDelay();
             await msg.react("🔥");
         }
 
@@ -48,6 +58,7 @@ client.on('message_create', async msg => {
             if (stickerQueue.includes(msg.author)) {
                 stickerQueue.splice(stickerQueue.indexOf(msg.author), 1);
                 const image = await msg.downloadMedia();
+                await naturalDelay();
                 await msg.reply(image, null, { sendMediaAsSticker: true });
             }
         }
@@ -70,6 +81,7 @@ client.on('message_create', async msg => {
                 if (config.enabled_commands.includes("sticker")) { count++; response += `${count}. *${config.prefix}sticker* [prompt]\n`; }
                 response += "\n<> - required\n[] - optional";
 
+                await naturalDelay();
                 await msg.reply(response);
             }
             
@@ -93,6 +105,7 @@ client.on('message_create', async msg => {
                     authorsQueue.push(msg.author);
                     gptMessages.push(cmpl.data.choices[0].message);
                     messagesQueue.push(gptMessages);
+                    await naturalDelay();
                     await msg.reply(`*Price:* $${(cmpl.data.usage.total_tokens*0.002/1000).toFixed(2)} ≈ ₨ ${(cmpl.data.usage.total_tokens*0.002*300/1000).toFixed(2)}\n${cmpl.data.choices[0].message.content}`);
                 } catch(error) {
                     if (error.response) {
@@ -100,6 +113,7 @@ client.on('message_create', async msg => {
                     } else {
                         console.error(`Error with OpenAI API request: ${error.message}`);
                     }
+                    await naturalDelay();
                     await msg.reply(config.error);
                 }
             }
@@ -124,6 +138,7 @@ client.on('message_create', async msg => {
                     authorsQueue.push(msg.author);
                     gptMessages.push(cmpl.data.choices[0].message);
                     messagesQueue.push(gptMessages);
+                    await naturalDelay();
                     await msg.reply(`*Price:* $${(cmpl.data.usage.total_tokens*0.002/1000).toFixed(2)} ≈ ₨ ${(cmpl.data.usage.total_tokens*0.002*300/1000).toFixed(2)}\n${cmpl.data.choices[0].message.content}`);
                 } catch(error) {
                     if (error.response) {
@@ -131,6 +146,7 @@ client.on('message_create', async msg => {
                     } else {
                         console.error(`Error with OpenAI API request: ${error.message}`);
                     }
+                    await naturalDelay();
                     await msg.reply(config.error);
                 }
             }
@@ -148,6 +164,7 @@ client.on('message_create', async msg => {
     
                         gptMessages.push(cmpl.data.choices[0].message);
                         messagesQueue[authorsQueue.indexOf(msg.author)] = gptMessages;
+                        await naturalDelay();
                         await msg.reply(`*Price:* $${(cmpl.data.usage.total_tokens*0.002/1000).toFixed(2)} ≈ ₨ ${(cmpl.data.usage.total_tokens*0.002*300/1000).toFixed(2)}\n${cmpl.data.choices[0].message.content}`);
                     } catch(error) {
                         if (error.response) {
@@ -155,6 +172,7 @@ client.on('message_create', async msg => {
                         } else {
                             console.error(`Error with OpenAI API request: ${error.message}`);
                         }
+                        await naturalDelay();
                         await msg.reply(config.error);
                     }
                 } else {
@@ -167,6 +185,7 @@ client.on('message_create', async msg => {
                     messagesQueue.splice(authorsQueue.indexOf(msg.author), 1);
                     authorsQueue.splice(authorsQueue.indexOf(msg.author), 1);
                 }
+                await naturalDelay();
                 await msg.reply("Cleared chat history!")
             }
             
@@ -201,6 +220,7 @@ client.on('message_create', async msg => {
                     console.log(image_url)
                     const image = await MessageMedia.fromUrl(image_url);
 
+                    await naturalDelay();
                     await msg.reply(image, null, { caption: `*Price:* ${price}\n${dallePrompt}` });
                 } catch(error) {
                     if (error.response) {
@@ -208,6 +228,7 @@ client.on('message_create', async msg => {
                     } else {
                         console.error(`Error with OpenAI API request: ${error.message}`);
                     }
+                    await naturalDelay();
                     await msg.reply(config.error);
                 }
             }
@@ -231,6 +252,7 @@ client.on('message_create', async msg => {
                         console.log(image_url)
                         const image = await MessageMedia.fromUrl(image_url);
 
+                        await naturalDelay();
                         await msg.reply(`*Price:* $0.016 ≈ ₨ 5\n${dallePrompt}`);
                         await client.sendMessage(msg.from, image, { sendMediaAsSticker: true });
                     } catch(error) {
@@ -239,14 +261,16 @@ client.on('message_create', async msg => {
                         } else {
                             console.error(`Error with OpenAI API request: ${error.message}`);
                         }
+                        await naturalDelay();
                         await msg.reply(config.error);
                     }
                 } else {
                     if (!stickerQueue.includes(msg.author)) {
                         stickerQueue.push(msg.author);
                     }
-
-                    msg.reply(`Send an image now to turn it into a sticker, otherwise use *${config.prefix}sticker <prompt>* to generate one`);
+                    
+                    await naturalDelay();
+                    await msg.reply(`Send an image now to turn it into a sticker, otherwise use *${config.prefix}sticker <prompt>* to generate one`);
                 }
             }
         }
