@@ -65,6 +65,7 @@ client.on('message_create', async msg => {
                 if (config.enabled_commands.includes("gpt3"))    { count++; response += `${count}. *${config.prefix}gpt3* <prompt>\n`; }
                 if (config.enabled_commands.includes("gpt4"))    { count++; response += `${count}. *${config.prefix}gpt4* <prompt>\n`; }
                 if (config.enabled_commands.includes("reply"))   { count++; response += `${count}. *${config.prefix}reply* <prompt>\n`; }
+                if (config.enabled_commands.includes("clear"))   { count++; response += `${count}. *${config.prefix}clear*\n`; }
                 if (config.enabled_commands.includes("dalle"))   { count++; response += `${count}. *${config.prefix}dalle* [256|512|1024] <prompt>\n`; }
                 if (config.enabled_commands.includes("sticker")) { count++; response += `${count}. *${config.prefix}sticker* [prompt]\n`; }
                 response += "\n<> - required\n[] - optional";
@@ -159,6 +160,14 @@ client.on('message_create', async msg => {
                 } else {
                     await msg.reply("Please use *!gpt3 <prompt>* or *!gpt4 <prompt>* to start a conversation first")
                 }
+            }
+
+            else if (cmd == "clear" && config.enabled_commands.includes("clear")) {
+                if (authorsQueue.includes(msg.author)) {
+                    messagesQueue.splice(authorsQueue.indexOf(msg.author), 1);
+                    authorsQueue.splice(authorsQueue.indexOf(msg.author), 1);
+                }
+                await msg.reply("Cleared chat history!")
             }
             
             else if (cmd == "dalle" && config.enabled_commands.includes("dalle")) {
