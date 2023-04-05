@@ -29,6 +29,10 @@ The existence of certain keywords can trigger events. For example, if the word '
     "OPENAI_ORG": "",
     "OPENAI_API_KEY": "",
     "prefix": "!",
+    "naturalDelay": {
+        "min": 1,
+        "max": 3
+    },
     "enabled_commands": ["gpt3", "gpt4", "reply", "help", "dalle", "sticker"],
     "enabled_triggers": ["fire"],
     "whitelist": [],

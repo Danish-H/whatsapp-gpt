@@ -18,7 +18,7 @@ function naturalDelay() {
         setTimeout(() => {
             console.log('Delaying for '+delay+'ms...')
             resolve();
-        }, delay=randomnaturalDelay(2, 5))
+        }, delay=randomnaturalDelay(config.naturalDelay.min, config.naturalDelay.max))
     })
 }
 
