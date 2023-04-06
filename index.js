@@ -2,6 +2,7 @@ console.log("Copyright 2023 Danish Humair. All rights reserved.\nThis program is
 
 const config = require("./config.json");
 const qrcode = require('qrcode-terminal');
+const sharp = require('sharp');
 const { Client, LocalAuth, MessageMedia } = require('whatsapp-web.js');
 const { Configuration, OpenAIApi } = require("openai");
 
@@ -39,8 +40,6 @@ client.on('qr', qr => {
 client.on('ready', () => {
     console.log(`\n(!) Client is ready!\nPrefix: ${config.prefix}\nEnabled triggers: ${config.enabled_triggers}\nEnabled commands: ${config.enabled_commands}\nWhitelist: ${config.whitelist}\nError: ${config.error}\nInitial prompt: ${config.initial_prompt}\n`);
 });
-
-client.initialize();
 
 const configuration = new Configuration({
     organization: config.OPENAI_ORG,
@@ -98,6 +97,47 @@ client.on('message_create', async msg => {
                 console.log("<request>")
                 await naturalDelay();
                 await console.log("<response>");
+            }
+
+            else if (cmd == "summarize") {
+                try {
+                    if (msg.hasQuotedMsg) {
+                        console.log("Quote detected!");
+                        const quote = await msg.getQuotedMessage();
+                        if (quote.type == "chat") {
+                            let gptMessages = [
+                                { role: "system", content: config.initial_prompt },
+                                { role: "user", content: `Summarize the following text into a few paragraphs at most, and make sure that the summary is actually smaller than the provided text:\n${quote.body}` }
+                            ];
+                            
+                            try {
+                                const cmpl = await openai.createChatCompletion({
+                                    model: "gpt-3.5-turbo",
+                                    messages: gptMessages
+                                });
+            
+                                authorsQueue.push(msg.author);
+                                gptMessages.push(cmpl.data.choices[0].message);
+                                messagesQueue.push(gptMessages);
+                                await naturalDelay();
+                                await msg.reply(`*Price:* $${(cmpl.data.usage.total_tokens*0.002/1000).toFixed(2)} ≈ ₨ ${(cmpl.data.usage.total_tokens*0.002*300/1000).toFixed(2)}\n${cmpl.data.choices[0].message.content}`);
+                            } catch(error) {
+                                if (error.response) {
+                                    console.error(error.response.status, error.response.data);
+                                } else {
+                                    console.error(`Error with OpenAI API request: ${error.message}`);
+                                }
+                                await naturalDelay();
+                                await msg.reply(config.error);
+                            }
+                        } else {
+                            await naturalDelay();
+                            await msg.reply("That message doesn't contain any text! Please use *!help* for more information.")
+                        }
+                    }
+                } catch(error) {
+                    console.log(error);
+                }
             }
             
             else if (cmd == "gpt3" && config.enabled_commands.includes("gpt3")) {
@@ -301,6 +341,53 @@ client.on('message_create', async msg => {
                 }
 
             }
+
+            else if (cmd == "qsticker") {
+                try {
+                    if (msg.hasQuotedMsg) {
+                        const quote = await msg.getQuotedMessage();
+                        if (quote.hasMedia && quote.type == "image") {
+                            let image = await quote.downloadMedia();
+                            let imgBuffer = await Buffer.from(image.data, 'base64');
+                            let img = await sharp(imgBuffer);
+                            let metadata = await img.metadata()
+
+                            sz = Math.max(metadata.width, metadata.height);
+                            w = Math.floor(sz/2)
+                            h = Math.floor(sz/2)
+
+                            const imgA = await sharp(imgBuffer).resize(sz, sz, { fit: 'contain', background: { r: 255, g: 255, b: 255, alpha: 0.0 }});
+                            const imgB = await sharp(imgBuffer).resize(sz, sz, { fit: 'contain', background: { r: 255, g: 255, b: 255, alpha: 0.0 }});
+                            const imgC = await sharp(imgBuffer).resize(sz, sz, { fit: 'contain', background: { r: 255, g: 255, b: 255, alpha: 0.0 }});
+                            const imgD = await sharp(imgBuffer).resize(sz, sz, { fit: 'contain', background: { r: 255, g: 255, b: 255, alpha: 0.0 }});
+
+                            img1 = await imgA.extract({left: 0, top: 0, width: w, height: h}).toBuffer();
+                            img2 = await imgB.extract({left: w, top: 0, width: w, height: h}).toBuffer();
+                            img3 = await imgC.extract({left: 0, top: h, width: w, height: h}).toBuffer();
+                            img4 = await imgD.extract({left: w, top: h, width: w, height: h}).toBuffer();
+
+                            await naturalDelay();
+                            await naturalDelay();
+
+                            image = await new MessageMedia('image/png', img1.toString('base64'));
+                            await client.sendMessage(msg.from, image, { sendMediaAsSticker: true });
+                            image = await new MessageMedia('image/png', img2.toString('base64'));
+                            await client.sendMessage(msg.from, image, { sendMediaAsSticker: true });
+                            image = await new MessageMedia('image/png', img3.toString('base64'));
+                            await client.sendMessage(msg.from, image, { sendMediaAsSticker: true });
+                            image = await new MessageMedia('image/png', img4.toString('base64'));
+                            await client.sendMessage(msg.from, image, { sendMediaAsSticker: true });
+                        } else {
+                            await naturalDelay();
+                            await msg.reply("That message doesn't contain an image! Please use *!help* for more information.")
+                        }
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
+            }
         }
     }
 });
+
+client.initialize();
