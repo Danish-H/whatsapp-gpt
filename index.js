@@ -139,6 +139,47 @@ client.on('message_create', async msg => {
                     console.log(error);
                 }
             }
+
+            else if (cmd == "poem") {
+                try {
+                    if (msg.hasQuotedMsg) {
+                        console.log("Quote detected!");
+                        const quote = await msg.getQuotedMessage();
+                        if (quote.type == "chat") {
+                            let gptMessages = [
+                                { role: "system", content: config.initial_prompt },
+                                { role: "user", content: `Use the following text to write a short poem:\n${quote.body}` }
+                            ];
+                            
+                            try {
+                                const cmpl = await openai.createChatCompletion({
+                                    model: "gpt-3.5-turbo",
+                                    messages: gptMessages
+                                });
+            
+                                authorsQueue.push(msg.author);
+                                gptMessages.push(cmpl.data.choices[0].message);
+                                messagesQueue.push(gptMessages);
+                                await naturalDelay();
+                                await msg.reply(`*Price:* $${(cmpl.data.usage.total_tokens*0.002/1000).toFixed(2)} ≈ ₨ ${(cmpl.data.usage.total_tokens*0.002*300/1000).toFixed(2)}\n${cmpl.data.choices[0].message.content}`);
+                            } catch(error) {
+                                if (error.response) {
+                                    console.error(error.response.status, error.response.data);
+                                } else {
+                                    console.error(`Error with OpenAI API request: ${error.message}`);
+                                }
+                                await naturalDelay();
+                                await msg.reply(config.error);
+                            }
+                        } else {
+                            await naturalDelay();
+                            await msg.reply("That message doesn't contain any text! Please use *!help* for more information.")
+                        }
+                    }
+                } catch(error) {
+                    console.log(error);
+                }
+            }
             
             else if (cmd == "gpt3" && config.enabled_commands.includes("gpt3")) {
                 let gptMessages = [
