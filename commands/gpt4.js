@@ -18,7 +18,7 @@ module.exports.run = async (bot, msg, args) => {
             ]
         });
         try {
-            const response = (await ai.getText(messages));
+            const response = (await ai.getText(messages, "gpt-4"));
             await messages.push(response.content);
             await bot.messagesList.set(msg.author, messages);
             await utils.naturalDelay(bot);
@@ -38,7 +38,7 @@ module.exports.run = async (bot, msg, args) => {
 
 module.exports.help = {
     category: "ai",
-    name: "gpt3",
-    aliases: ["chat", "ask", "q"],
+    name: "gpt4",
+    aliases: [],
     args: "<prompt>"
 }

@@ -18,7 +18,8 @@ const getText = async function(messages, model="gpt-3.5-turbo") {
         await console.log("[!] Finished text generation!")
         return {
             response: response.data.choices[0].message,
-            tokens: response.data.usage.total_tokens
+            tokens: response.data.usage.total_tokens,
+            completion_tokens: response.data.usage.completion_tokens
         }
     } catch(error) {
         if (error.response) console.error(error.response.status, error.response.data);
