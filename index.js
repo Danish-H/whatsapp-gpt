@@ -27,6 +27,7 @@ client.on('message_create', async msg => {
         bot.processCount++;
         console.log("[!] Received potential command");
         const [cmd, ...args] = msg.body.replace(config.prefix, '').split(' ');
+        const sender = msg.author ? msg.author.slice(0, 12) : msg.from.slice(0, 12);
         console.log("Command: "+cmd+"\tArgs: "+(args.length ? args.join(' ')     : "None"));
 
         let command = bot.commands.get(cmd);
@@ -35,7 +36,7 @@ client.on('message_create', async msg => {
             command.run(bot, msg, args);
         }
         
-        else if (cmd == "reload") {
+        else if (cmd == "reload" && config.ops.includes(sender)) {
             delete require.cache[require.resolve("./config.json")];
             delete require.cache[require.resolve("./utils.js")];
             delete require.cache[require.resolve("./ai.js")];
@@ -47,7 +48,7 @@ client.on('message_create', async msg => {
             await msg.react('✅');
         }
 
-        else if (cmd == "debug") {
+        else if (cmd == "debug" && config.ops.includes(sender)) {
             console.log(bot);
             await utils.naturalDelay(bot);
             await msg.react('✅');
