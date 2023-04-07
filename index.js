@@ -50,11 +50,11 @@ client.on('message_create', async msg => {
             console.log("[!] Received image for sticker");
             try {
                 const image = await msg.downloadMedia();
-                await utils.naturalDelay();
+                await utils.naturalDelay(bot);
                 await msg.reply(image, null, { sendMediaAsSticker: true });
             } catch (error) {
                 console.error(`Error with WhatsApp: ${error}`);
-                await utils.naturalDelay();
+                await utils.naturalDelay(bot);
                 await msg.react('⚠️');
             }
         }
