@@ -27,6 +27,7 @@ const bot = {
     help: null,
     processCount: null,
     loadCommands: null,
+    messagesList: new Map(),
     stickerQueue: []
 }
 
@@ -41,13 +42,14 @@ bot.loadCommands = function() {
             let props = require(`./commands/${f}`);
             console.log(`[${i+1}] ${f} was discovered.`);
             bot.commands.set(props.help.name, props);
+            props.help.aliases.forEach(name => bot.commands.set(name, props));
         });
 
         bot.help = "Commands you can use:\n\n";
         let i = 0;
         bot.commands.forEach(props => {
             let cmd = `${++i}. *${config.prefix}${props.help.name}* ${props.help.args}`.trim();     
-            if (!config.enabled_commands.includes(props.help.name)) cmd = `~${cmd}~`;   
+            if (!config.enabled_commands.includes("*") && !config.enabled_commands.includes(props.help.name)) cmd = `~${cmd}~`;   
             bot.help += cmd+"\n";        
         });
         bot.help += "\n<> - required\n[] - optional";

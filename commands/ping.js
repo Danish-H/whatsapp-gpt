@@ -16,5 +16,6 @@ module.exports.run = async (bot, msg, args) => {
 module.exports.help = {
     category: "tools",
     name: "ping",
+    aliases: [],
     args: ""
 }

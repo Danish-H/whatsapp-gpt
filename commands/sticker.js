@@ -50,5 +50,6 @@ module.exports.run = async (bot, msg, args) => {
 module.exports.help = {
     category: "fun",
     name: "sticker",
+    aliases: ["stick"],
     args: "[prompt]"
 }
