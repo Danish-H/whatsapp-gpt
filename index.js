@@ -12,7 +12,7 @@ const client = new Client({
 
 function randomnaturalDelay(min, max) {
     currentProcesses++;
-    delay = Math.round(min*1000 + (Math.random()*(max-min+currentProcesses)*1000));
+    delay = Math.round(min*1000 + (Math.random()*(max-min)*1000))*(currentProcesses+1);
     console.log('Delaying for '+delay+'ms...');
     return delay;
 }
@@ -182,36 +182,37 @@ client.on('message_create', async msg => {
             }
             
             else if (cmd == "gpt3" && config.enabled_commands.includes("gpt3")) {
-                let gptMessages = [
-                    { role: "system", content: config.initial_prompt },
-                    { role: "user", content: args.join(' ') }
-                ];
+                let gptMessages = [];
 
                 if (authorsQueue.includes(msg.author)) {
                     messagesQueue.splice(authorsQueue.indexOf(msg.author), 1);
                     authorsQueue.splice(authorsQueue.indexOf(msg.author), 1);
                 }
-                
-                try {
-                    const cmpl = await openai.createChatCompletion({
-                        model: "gpt-3.5-turbo",
-                        messages: gptMessages
-                    });
 
-                    authorsQueue.push(msg.author);
-                    gptMessages.push(cmpl.data.choices[0].message);
-                    messagesQueue.push(gptMessages);
-                    await naturalDelay();
-                    await msg.reply(`*Price:* $${(cmpl.data.usage.total_tokens*0.002/1000).toFixed(2)} ≈ ₨ ${(cmpl.data.usage.total_tokens*0.002*300/1000).toFixed(2)}\n${cmpl.data.choices[0].message.content}`);
-                } catch(error) {
+                await msg.getContact().then(contact => {
+                    gptMessages = [
+                        { role: "system", content: config.initial_prompt+" You are now going to be talking directly with the user, whose userame is "+contact.pushname+", contact name (if exists) is "+contact.name+" and phone number is +"+msg.author.slice(0, 12)+". Please respond to their query, and try to refer to them by their name." },
+                        { role: "user", content: args.join(' ') }
+                    ];
+                });
+
+                const cmpl = await openai.createChatCompletion({
+                    model: "gpt-3.5-turbo",
+                    messages: await gptMessages
+                }).catch(error => {
                     if (error.response) {
                         console.error(error.response.status, error.response.data);
                     } else {
                         console.error(`Error with OpenAI API request: ${error.message}`);
                     }
-                    await naturalDelay();
-                    await msg.reply(config.error);
-                }
+                    return;
+                })
+
+                await authorsQueue.push(msg.author);
+                await gptMessages.push(cmpl.data.choices[0].message);
+                await messagesQueue.push(gptMessages);
+                await naturalDelay();
+                await msg.reply(`*Price:* $${(cmpl.data.usage.total_tokens*0.002/1000).toFixed(2)} ≈ ₨ ${(cmpl.data.usage.total_tokens*0.002*300/1000).toFixed(2)}\n${cmpl.data.choices[0].message.content}`);
             }
             
             else if (cmd == "gpt4" && config.enabled_commands.includes("gpt4")) {
@@ -387,7 +388,7 @@ client.on('message_create', async msg => {
                 try {
                     if (msg.hasQuotedMsg) {
                         const quote = await msg.getQuotedMessage();
-                        if (quote.hasMedia && quote.type == "image") {
+                        if (quote.hasMedia && (quote.type == "image" || quote.type == "sticker")) {
                             let image = await quote.downloadMedia();
                             let imgBuffer = await Buffer.from(image.data, 'base64');
                             let img = await sharp(imgBuffer);
