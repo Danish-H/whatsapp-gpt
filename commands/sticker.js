@@ -12,9 +12,9 @@ module.exports.run = async (bot, msg, args) => {
             const image = await MessageMedia.fromUrl(image_url);
 
             await utils.naturalDelay(bot);
-            await msg.reply(`${utils.price(0.016, 5)}\n${dallePrompt}`)
             chat = await msg.getChat();
-            await chat.sendMessage(image, { sendMediaAsSticker: true });
+            await msg.reply(image, null, { sendMediaAsSticker: true });
+            await chat.sendMessage(`${utils.price(0.016, 5)}\n${dallePrompt}`);
         } catch (error) {
             console.error(`Error with WhatsApp: ${error}`);
             await utils.naturalDelay(bot);
