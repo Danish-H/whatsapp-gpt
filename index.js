@@ -1,6 +1,5 @@
 console.log("Copyright 2023 Danish Humair. All rights reserved.\nThis program is only for educational purposes!\n");
 
-const fs = require("fs");
 const qrcode = require('qrcode-terminal');
 const { Client, LocalAuth, MessageMedia } = require('whatsapp-web.js');
 let config = require("./config.json");
@@ -10,39 +9,7 @@ const client = new Client({
     authStrategy: new LocalAuth()
 });
 
-const bot = {
-    commands: null,
-    help: null,
-    processCount: null,
-    loadCommands: null,
-    stickerQueue: []
-}
-
-bot.loadCommands = function() {
-    bot.commands = new Map();
-    fs.readdir("./commands/", (err, files) => {
-        if (err) return console.log(err);
-        let jsfile = files.filter(f => f.split(".").pop() == "js");
-        if (jsfile.length <= 0) return console.log("No commands were discovered.");
-        jsfile.forEach((f, i) => {
-            delete require.cache[require.resolve(`./commands/${f}`)]
-            let props = require(`./commands/${f}`);
-            console.log(`[${i+1}] ${f} was discovered.`);
-            bot.commands.set(props.help.name, props);
-        });
-
-        bot.help = "Commands you can use:\n\n";
-        let i = 0;
-        bot.commands.forEach(props => {
-            let cmd = `${++i}. *${config.prefix}${props.help.name}* ${props.help.args}`.trim();     
-            if (!config.enabled_commands.includes(props.help.name)) cmd = `~${cmd}~`;   
-            bot.help += cmd+"\n";        
-        });
-        bot.help += "\n<> - required\n[] - optional";
-
-        bot.processCount = 0;
-    });
-}
+const bot = utils.bot;
 
 client.on('qr', qr => {
     console.log("Please scan the following QR code to authenticate:")
