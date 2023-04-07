@@ -1,5 +1,5 @@
 const config = require("../config.json");
-const { Client, MessageMedia } = require('whatsapp-web.js');
+const { MessageMedia } = require('whatsapp-web.js');
 
 module.exports.run = async (bot, msg, args) => {
     try {

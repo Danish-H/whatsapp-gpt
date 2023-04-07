@@ -1,6 +1,5 @@
 const config = require("../config.json");
 const utils = require("../utils.js")
-const { Client } = require('whatsapp-web.js');
 
 module.exports.run = async (bot, msg, args) => {
     timestamp = Math.floor(Date.now()/1000);
@@ -8,7 +7,7 @@ module.exports.run = async (bot, msg, args) => {
 
     response = await msg.reply("Pinging...");
     await console.log(`E: ${response.timestamp}`);
-    await utils.naturalDelay(0, 1);
+    await utils.naturalDelay(bot, 0, 1);
 
     chat = await response.getChat();
     await chat.sendMessage(`🏓 Pong! ${(response.timestamp - msg.timestamp)}s`);

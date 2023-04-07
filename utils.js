@@ -1,17 +1,18 @@
 const config = require("./config.json");
 
 const randomDelay = function(min, max) {
-    delay = Math.round(min*1000+(Math.random()*(max-min)*1000));
-    console.log(`Starting ${delay}ms delay...`);
-    return delay;
+    return Math.round(min*1000+(Math.random()*(max-min)*1000));
 }
 
-const naturalDelay = async function(min=config.naturalDelay.min, max=config.naturalDelay.max) {
+const naturalDelay = async function(bot={processCount: 0}, min=config.naturalDelay.min, max=config.naturalDelay.max) {
     return new Promise(resolve => {
+        const delay = randomDelay(min, max)*bot.processCount;
+        console.log(`(${bot.processCount} processes) Starting ${delay}ms delay...`);
         setTimeout(() => {
-            console.log(`Finished ${delay}ms delay!`);
+            bot.processCount--;
+            console.log(`(${bot.processCount} processes) Finished ${delay}ms delay!`);
             resolve();
-        }, delay=randomDelay(min, max));
+        }, delay);
     });
 }
 

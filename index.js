@@ -13,8 +13,9 @@ const client = new Client({
 const bot = {
     commands: null,
     help: null,
-    stickerQueue: [],
-    loadCommands: null
+    processCount: null,
+    loadCommands: null,
+    stickerQueue: []
 }
 
 bot.loadCommands = function() {
@@ -38,6 +39,8 @@ bot.loadCommands = function() {
             bot.help += cmd+"\n";        
         });
         bot.help += "\n<> - required\n[] - optional";
+
+        bot.processCount = 0;
     });
 }
 
@@ -60,6 +63,7 @@ client.on('message_create', async msg => {
 
         let command = bot.commands.get(cmd);
         if (command) {
+            bot.processCount++;
             command.run(bot, msg, args);
         }
         
@@ -70,11 +74,6 @@ client.on('message_create', async msg => {
             config = require("./config.json");
             utils = require("./utils.js");
             await bot.loadCommands();
-        }
-        
-        else if (cmd == "help") {
-            await utils.naturalDelay();
-            await msg.reply(bot.help);
         }
     }
 
