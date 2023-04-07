@@ -7,7 +7,7 @@ module.exports.run = async (bot, msg, args) => {
 
     response = await msg.reply("Pinging...");
     await console.log(`E: ${response.timestamp}`);
-    await utils.naturalDelay(bot, 0, 1);
+    await utils.naturalDelay(bot, 0.5, 1.5);
 
     chat = await response.getChat();
     await chat.sendMessage(`🏓 Pong! ${(response.timestamp - msg.timestamp)}s`);

@@ -8,10 +8,11 @@ const randomDelay = function(min, max) {
 const naturalDelay = async function(bot={processCount: 0}, min=config.naturalDelay.min, max=config.naturalDelay.max) {
     return new Promise(resolve => {
         const delay = randomDelay(min, max)*bot.processCount;
-        console.log(`(${bot.processCount} processes) Starting ${delay}ms delay...`);
+        const process = bot.processCount;
+        console.log(`(Process ${process}) Starting ${delay}ms delay...`);
         setTimeout(() => {
+            console.log(`(Process ${process}) Finished ${delay}ms delay!`);
             bot.processCount--;
-            console.log(`(${bot.processCount} processes) Finished ${delay}ms delay!`);
             resolve();
         }, delay);
     });
