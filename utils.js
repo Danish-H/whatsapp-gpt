@@ -25,7 +25,7 @@ const price = function(usd, pkr=usd*300) {
 const bot = {
     commands: null,
     help: null,
-    processCount: null,
+    processCount: 0,
     loadCommands: null,
     messagesList: new Map(),
     stickerQueue: []
@@ -36,25 +36,21 @@ bot.loadCommands = function() {
     fs.readdir("./commands/", (err, files) => {
         if (err) return console.log(err);
         let jsfile = files.filter(f => f.split(".").pop() == "js");
+        bot.help = "No commands were found!"
         if (jsfile.length <= 0) return console.log("No commands were discovered.");
+        bot.help = "Commands you can use:\n\n";
         jsfile.forEach((f, i) => {
             delete require.cache[require.resolve(`./commands/${f}`)]
             let props = require(`./commands/${f}`);
             console.log(`[${i+1}] ${f} was discovered.`);
             bot.commands.set(props.help.name, props);
             props.help.aliases.forEach(name => bot.commands.set(name, props));
-        });
-
-        bot.help = "Commands you can use:\n\n";
-        let i = 0;
-        bot.commands.forEach(props => {
-            let cmd = `${++i}. *${config.prefix}${props.help.name}* ${props.help.args}`.trim();     
-            if (!config.enabled_commands.includes("*") && !config.enabled_commands.includes(props.help.name)) cmd = `~${cmd}~`;   
-            bot.help += cmd+"\n";        
+            let cmd = `${i}. *${config.prefix}${props.help.name}* ${props.help.args}`.trim();
+            if (!config.enabled_commands.includes("*") && !config.enabled_commands.includes(props.help.name)) cmd = `~${cmd}~`;
+            bot.help += cmd+"\n";
         });
         bot.help += "\n<> - required\n[] - optional";
-
-        bot.processCount = 0;
+        console.log();
     });
 }
 
