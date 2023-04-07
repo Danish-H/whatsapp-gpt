@@ -17,32 +17,39 @@ client.on('qr', qr => {
 });
 
 client.on('ready', () => {
-    console.log("[!] Client is ready!\n");
+    console.log("[!] Client is ready!");
 });
 
 client.on('message_create', async msg => {
     if (config.whitelist.length && !config.whitelist.includes(msg.author)) return;
 
     if (msg.body.startsWith(config.prefix)) {
+        bot.processCount++;
         console.log("[!] Received potential command");
         const [cmd, ...args] = msg.body.replace(config.prefix, '').split(' ');
         console.log("Command: "+cmd+"\tArgs: "+(args.length ? args.join(' ')     : "None"));
 
         let command = bot.commands.get(cmd);
         if (command) {
-            bot.processCount++;
+            console.log(`[${msg.timestamp}] [CID:${msg.from}] [T:${msg.type}] [M:${msg.hasMedia}] ${msg.author}: ${msg.body}`);
             command.run(bot, msg, args);
         }
         
         else if (cmd == "reload") {
-            bot.processCount++;
             delete require.cache[require.resolve("./config.json")];
             delete require.cache[require.resolve("./utils.js")];
             delete require.cache[require.resolve("./ai.js")];
+            if (args[0] == "hard") bot.messagesList = new Map();
             config = require("./config.json");
             utils = require("./utils.js");
             await bot.loadCommands();
             await utils.naturalDelay(bot, 1, 2);
+            await msg.react('✅');
+        }
+
+        else if (cmd == "debug") {
+            console.log(bot);
+            await utils.naturalDelay(bot);
             await msg.react('✅');
         }
     }
@@ -62,6 +69,8 @@ client.on('message_create', async msg => {
             }
         }
     }
+
+    else bot.processCount--;
 });
 
 bot.loadCommands();

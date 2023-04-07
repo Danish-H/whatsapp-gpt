@@ -50,7 +50,6 @@ bot.loadCommands = function() {
             bot.help += cmd+"\n";
         });
         bot.help += "\n<> - required\n[] - optional";
-        console.log();
     });
 }
 

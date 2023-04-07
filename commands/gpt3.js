@@ -1,10 +1,10 @@
 const config = require("../config.json");
 const utils = require("../utils.js");
 const ai = require("../ai.js");
-const { MessageMedia } = require('whatsapp-web.js');
 
 module.exports.run = async (bot, msg, args) => {
     if (args.length) {
+        const author = msg.author ? msg.author.slice(0, 12) : msg.from.slice(0, 12);
         let message = args.join(' ');
         if (msg.hasQuotedMsg) {
             const quote = await msg.getQuotedMessage();
@@ -13,16 +13,16 @@ module.exports.run = async (bot, msg, args) => {
         let messages = [];
         await msg.getContact().then(contact => {
             messages = [
-                { role: "system", content: config.initial_prompt.replace("{USERNAME}", contact.pushname).replace("{CONTACT}", contact.name).replace("{NUMBER}", msg.author.slice(0, 12)) },
+                { role: "system", content: config.initial_prompt.replace("{USERNAME}", contact.pushname).replace("{CONTACT}", contact.name).replace("{NUMBER}", author) },
                 { role: "user", content: message }
             ]
         });
         try {
             const response = (await ai.getText(messages));
-            await messages.push(response.content);
-            await bot.messagesList.set(msg.author, messages);
             await utils.naturalDelay(bot);
             await msg.reply(`${utils.price(response.tokens*0.002/1000)}\n${response.response.content}`);
+            await messages.push(response.response);
+            await bot.messagesList.set(author, { type: 'gpt3', messages: messages });
         } catch (error) {
             console.error(`Error with WhatsApp: ${error}`);
             await utils.naturalDelay(bot);
