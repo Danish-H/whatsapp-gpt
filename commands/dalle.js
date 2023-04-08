@@ -11,12 +11,12 @@ module.exports.run = async (bot, msg, args) => {
             let price = 0.016;
             if (("256", "512", "1024").includes(args[0])) {
                 if (args[0] == "512") price = 0.018;
-                else if (args[0] == "1025") price = 0.02;
-                args.shift();
+                else if (args[0] == "1024") price = 0.02;
                 dalleSize = `${args[0]}x${args[0]}`;
+                args.shift();
                 dallePrompt = args.join(' ');
             }
-            const image_url = (await ai.getImage(dallePrompt)).image_url;
+            const image_url = (await ai.getImage(dallePrompt, dalleSize)).image_url;
             const image = await MessageMedia.fromUrl(image_url);
 
             await utils.naturalDelay(bot);
