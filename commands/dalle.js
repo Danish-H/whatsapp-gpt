@@ -21,10 +21,12 @@ module.exports.run = async (bot, msg, args) => {
             await msg.react('⌛');
             const image_url = (await ai.getImage(dallePrompt, dalleSize)).image_url;
             const image = await MessageMedia.fromUrl(image_url);
-            await msg.react('');
             await utils.naturalDelay(bot);
             chat = await msg.getChat();
             await msg.reply(image, null, { caption: `${utils.price(price)}\n${dallePrompt}` });
+            await bot.processCount++;
+            await utils.naturalDelay(bot, 1, 2);
+            await msg.react('');
         } catch (error) {
             console.error(`Error with WhatsApp: ${error}`);
             await utils.naturalDelay(bot);

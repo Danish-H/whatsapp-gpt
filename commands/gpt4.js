@@ -22,11 +22,13 @@ module.exports.run = async (bot, msg, args) => {
             await utils.naturalDelay(bot, 1, 2);
             await msg.react('⌛');
             const response = (await ai.getText(messages, "gpt-4"));
-            await msg.react('');
             await utils.naturalDelay(bot);
             await msg.reply(`${utils.price((response.tokens*0.03/1000)+(response.completion_tokens*0.03/1000))}\n${response.response.content}`);
             await messages.push(response.response);
             await bot.messagesList.set(author, { type: 'gpt4', messages: messages });
+            await bot.processCount++;
+            await utils.naturalDelay(bot, 1, 2);
+            await msg.react('');
         } catch (error) {
             console.error(`Error with WhatsApp: ${error}`);
             await utils.naturalDelay(bot);
