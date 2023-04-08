@@ -9,22 +9,22 @@ Please note that this code is only meant for educational purposes, and any use o
 ### Commands
 | Syntax                        | Description                                               |
 | :---------------------------- | :-------------------------------------------------------- |
-| **help**                      | display a list of all commands                            |
-| **transcribe**                | transcribe a voice note by replying to it                 |
-| **gpt3** \<prompt\>           | get a response from OpenAI's gpt-3.5-turbo                |
-| **gpt4** \<prompt\>           | get a response from OpenAI's gpt-4                        |
-| **reply** \<prompt\>          | continue an on-going conversation with gpt3 or gpt4       |
-| **summarize**                 | summarize the message replied to                          |
-| **poem**                      | generate a poem of the message replied to                 |
-| **tldr**                      | generate reddit-like tl;dr of message replied to          |
-| **dalle** \[size\] \<prompt\> | generate an image using DALL·E of a given size            |
-| **sticker**                   | turn an image into a sticker in-chat                      |
-| **sticker** \<prompt\>        | generate a sticker given a prompt                         |
-| **qsticker**                  | create 2x2 grid sticker of the image/sticker replied to   |
-| **catsticker**                | generate a random cat sticker using public api            |
-| **reload**                    | reload commands without stopping bot                      |
-| **debug**                     | pring bot object in console                               |
-| **stop**                      | stop the bot                                              |
+| **help**                      | Display a list of all commands                            |
+| **transcribe**                | Transcribe a voice note by replying to it                 |
+| **gpt3** \<prompt\>           | Get a response from OpenAI's gpt-3.5-turbo                |
+| **gpt4** \<prompt\>           | Get a response from OpenAI's gpt-4                        |
+| **reply** \<prompt\>          | Continue an on-going conversation with gpt3 or gpt4       |
+| **summarize**                 | Summarize the message replied to                          |
+| **poem**                      | Generate a poem of the message replied to                 |
+| **tldr**                      | Generate reddit-like tl;dr of message replied to          |
+| **dalle** \[size\] \<prompt\> | Generate an image using DALL·E of a given size            |
+| **sticker**                   | Turn an image into a sticker in-chat                      |
+| **sticker** \<prompt\>        | Generate a sticker given a prompt                         |
+| **qsticker**                  | Create 2x2 grid sticker of the image/sticker replied to   |
+| **catsticker**                | Generate a random cat sticker using public api            |
+| **reload**                    | Reload commands without stopping bot                      |
+| **debug**                     | Print bot object in console                               |
+| **stop**                      | Stop the bot                                              |
 
 ### Triggers
 The existence of certain keywords can trigger events. For example, if the word 'fire' is present in any message, the bot can react to it with the fire emoji.
