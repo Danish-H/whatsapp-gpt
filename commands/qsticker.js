@@ -45,5 +45,5 @@ module.exports.help = {
     category: "fun",
     name: "qsticker",
     aliases: ["qstick"],
-    args: "[prompt]"
+    args: ""
 }

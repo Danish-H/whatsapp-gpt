@@ -27,7 +27,7 @@ module.exports.run = async (bot, msg, args) => {
 
 module.exports.help = {
     category: "ai",
-    name: "summarize",
-    aliases: ["tldr"],
+    name: "tldr",
+    aliases: [],
     args: ""
 }
