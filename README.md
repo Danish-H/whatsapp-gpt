@@ -35,9 +35,11 @@ The existence of certain keywords can trigger events. For example, if the word '
 - openai@3.2.1
 - qrcode-terminal@0.12.0
 - whatsapp-web.js@1.19.5
+- sharp@0.32.0
 - color@4.2.3
 
-## config.json
+## Configuration
+To run the bot, you must create a file called `config.json` in the root directory with content similar to the example below.
 ```json
 {
     "OPENAI_ORG": "",
