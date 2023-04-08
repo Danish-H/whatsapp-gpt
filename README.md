@@ -1,6 +1,6 @@
 # WhatsAppGPT
 
-This is a simple Discord-style bot written for WhatsApp which works with OpenAI API.
+This is a simple Discord-style bot written for WhatsApp which works with OpenAI API. This bot is heavily integrated with WhatsApp and allows using ChatGPT features while keeping in context things like the user's information and the message they have replied to. There is also a customizable humanized delay in responses to prevent overwhelming WhatsApp's automated messaging detection. The goal is to make it slow enough that it could be equivalent to a user manually copying and pasting responses, so it has no unintended effect on WhatsApp's services.
 
 Please note that this code is only meant for educational purposes, and any use of it must comply with the terms of service of WhatsApp, OpenAI, and any other involved.
 

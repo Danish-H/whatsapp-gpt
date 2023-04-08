@@ -17,7 +17,7 @@ module.exports.run = async (bot, msg, args) => {
                 dallePrompt = args.join(' ');
             }
             bot.processCount++;
-            await utils.naturalDelay(bot, 1, 2);
+            await utils.naturalDelay(bot, 2, 3);
             await msg.react('⌛');
             const image_url = (await ai.getImage(dallePrompt, dalleSize)).image_url;
             const image = await MessageMedia.fromUrl(image_url);
