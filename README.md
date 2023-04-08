@@ -22,6 +22,9 @@ Please note that this code is only meant for educational purposes, and any use o
 | **sticker** \<prompt\>        | generate a sticker given a prompt                         |
 | **qsticker**                  | create 2x2 grid sticker of the image/sticker replied to   |
 | **catsticker**                | generate a random cat sticker using public api            |
+| **reload**                    | reload commands without stopping bot                      |
+| **debug**                     | pring bot object in console                               |
+| **stop**                      | stop the bot                                              |
 
 ### Triggers
 The existence of certain keywords can trigger events. For example, if the word 'fire' is present in any message, the bot can react to it with the fire emoji.

@@ -63,7 +63,7 @@ client.on('message_create', async msg => {
 
         else if (cmd == "stop" && config.ops.includes(sender)) {
             await utils.naturalDelay(bot);
-            await msg.react('✅');
+            await msg.react('👋');
             await process.exit();
         }
 
