@@ -10,6 +10,7 @@ Please note that this code is only meant for educational purposes, and any use o
 | Syntax                        | Description                                               |
 | :---------------------------- | :-------------------------------------------------------- |
 | **help**                      | display a list of all commands                            |
+| **transcribe**                | transcribe a voice note by replying to it                 |
 | **gpt3** \<prompt\>           | get a response from OpenAI's gpt-3.5-turbo                |
 | **gpt4** \<prompt\>           | get a response from OpenAI's gpt-4                        |
 | **reply** \<prompt\>          | continue an on-going conversation with gpt3 or gpt4       |

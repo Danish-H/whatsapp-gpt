@@ -9,7 +9,7 @@ module.exports.run = async (bot, msg, args) => {
         if (msg.hasQuotedMsg) {
             const quote = await msg.getQuotedMessage();
             if (!quote.hasMedia || !(quote.type == "image" || quote.type == "sticker")) {
-                await naturalDelay();
+                await utils.naturalDelay();
                 await msg.reply("That message doesn't contain an image! Please use *!help* for more information.");
             } else {
                 const image = await quote.downloadMedia();
@@ -27,7 +27,7 @@ module.exports.run = async (bot, msg, args) => {
                 images.push(await sharp(imgBuffer).extract( {left: 0, top: w, width: w, height: w} ).toBuffer());
                 images.push(await sharp(imgBuffer).extract( {left: w, top: w, width: w, height: w} ).toBuffer());
                 bot.processCount++;
-                await utils.naturalDelay(bot, config.naturalDelay.min*1.5, config.naturalDelay.max*1.5);
+                await utils.naturalDelay(bot);
                 for (let i=0; i<4; i++) {
                     chat = await msg.getChat();
                     await chat.sendMessage(new MessageMedia('image/png', images[i].toString('base64')), { sendMediaAsSticker: true });
