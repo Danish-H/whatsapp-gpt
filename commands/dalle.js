@@ -16,9 +16,12 @@ module.exports.run = async (bot, msg, args) => {
                 args.shift();
                 dallePrompt = args.join(' ');
             }
+            bot.processCount++;
+            await utils.naturalDelay(bot, 1, 2);
+            await msg.react('⌛');
             const image_url = (await ai.getImage(dallePrompt, dalleSize)).image_url;
             const image = await MessageMedia.fromUrl(image_url);
-
+            await msg.react('');
             await utils.naturalDelay(bot);
             chat = await msg.getChat();
             await msg.reply(image, null, { caption: `${utils.price(price)}\n${dallePrompt}` });

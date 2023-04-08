@@ -18,7 +18,11 @@ module.exports.run = async (bot, msg, args) => {
             ]
         });
         try {
+            bot.processCount++;
+            await utils.naturalDelay(bot, 1, 2);
+            await msg.react('⌛');
             const response = (await ai.getText(messages, "gpt-4"));
+            await msg.react('');
             await utils.naturalDelay(bot);
             await msg.reply(`${utils.price((response.tokens*0.03/1000)+(response.completion_tokens*0.03/1000))}\n${response.response.content}`);
             await messages.push(response.response);
