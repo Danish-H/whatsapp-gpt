@@ -32,7 +32,7 @@ client.on('message_create', async msg => {
         let command = bot.commands.get(cmd);
         if (command) {
             bot.processCount++;
-            if (config.enabled_commands.includes(cmd)) {
+            if (config.enabled_commands.includes(command.help.name)) {
                 console.log(`[${msg.timestamp}] [CID:${msg.from}] [T:${msg.type}] [M:${msg.hasMedia}] ${msg.author}: ${msg.body}`);
                 command.run(bot, msg, args);
             } else {
@@ -61,7 +61,13 @@ client.on('message_create', async msg => {
             await msg.react('✅');
         }
 
-        else if (("reload", "debug").includes(cmd) && !config.ops.includes(sender)) {
+        else if (cmd == "stop" && config.ops.includes(sender)) {
+            await utils.naturalDelay(bot);
+            await msg.react('✅');
+            await process.exit();
+        }
+
+        else if (("reload", "debug", "stop").includes(cmd) && !config.ops.includes(sender)) {
             await utils.naturalDelay(bot);
             await msg.react('🤨');
         }
