@@ -37,5 +37,5 @@ module.exports.help = {
     category: "ai",
     name: "dalle",
     aliases: ["diffuse", "sd", "generate", "gen", "dale"],
-    args: "<prompt>"
+    args: "[256|512|1024] <prompt>"
 }
