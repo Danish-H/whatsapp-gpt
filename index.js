@@ -32,8 +32,13 @@ client.on('message_create', async msg => {
         let command = bot.commands.get(cmd);
         if (command) {
             bot.processCount++;
-            console.log(`[${msg.timestamp}] [CID:${msg.from}] [T:${msg.type}] [M:${msg.hasMedia}] ${msg.author}: ${msg.body}`);
-            command.run(bot, msg, args);
+            if (config.enabled_commands.includes(cmd)) {
+                console.log(`[${msg.timestamp}] [CID:${msg.from}] [T:${msg.type}] [M:${msg.hasMedia}] ${msg.author}: ${msg.body}`);
+                command.run(bot, msg, args);
+            } else {
+                await utils.naturalDelay(bot);
+                await msg.react('🚫')
+            }
         }
         
         else if (cmd == "reload" && config.ops.includes(sender)) {
