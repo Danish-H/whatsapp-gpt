@@ -13,6 +13,7 @@ const naturalDelay = async function(bot={processCount: 0}, min=config.naturalDel
         setTimeout(() => {
             console.log(`(Process ${process}) Finished ${delay}ms delay!`);
             bot.processCount--;
+            if (bot.processCount < 0) bot.processCount = 0;
             resolve();
         }, delay);
     });
