@@ -41,6 +41,6 @@ module.exports.run = async (bot, msg, args) => {
 module.exports.help = {
     category: "ai",
     name: "dalle",
-    aliases: ["diffuse", "sd", "generate", "gen", "dale"],
+    aliases: ["dale"],
     args: "[256|512|1024] <prompt>"
 }

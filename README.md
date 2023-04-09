@@ -9,24 +9,25 @@ Please note that this code is only meant for educational purposes, and any use o
 ## Features
 
 ### Commands
-| Syntax                        | Description                                               |
-| :---------------------------- | :-------------------------------------------------------- |
-| **help**                      | Display a list of all commands                            |
-| **transcribe**                | Transcribe a voice note by replying to it                 |
-| **gpt3** \<prompt\>           | Get a response from OpenAI's gpt-3.5-turbo                |
-| **gpt4** \<prompt\>           | Get a response from OpenAI's gpt-4                        |
-| **reply** \<prompt\>          | Continue an on-going conversation with gpt3 or gpt4       |
-| **summarize**                 | Summarize the message replied to                          |
-| **poem**                      | Generate a poem of the message replied to                 |
-| **tldr**                      | Generate reddit-like tl;dr of message replied to          |
-| **dalle** \[size\] \<prompt\> | Generate an image using DALL·E of a given size            |
-| **sticker**                   | Turn an image into a sticker in-chat                      |
-| **sticker** \<prompt\>        | Generate a sticker given a prompt                         |
-| **qsticker**                  | Create 2x2 grid sticker of the image/sticker replied to   |
-| **catsticker**                | Generate a random cat sticker using public api            |
-| **reload**                    | Reload commands without stopping bot                      |
-| **debug**                     | Print bot object in console                               |
-| **stop**                      | Stop the bot                                              |
+| Syntax                          | Description                                             |
+| :------------------------------ | :------------------------------------------------------ |
+| **help**                        | Display a list of all commands                          |
+| **transcribe**                  | Transcribe a voice note by replying to it               |
+| **gpt3** \<prompt\>             | Get a response from OpenAI's gpt-3.5-turbo              |
+| **gpt4** \<prompt\>             | Get a response from OpenAI's gpt-4                      |
+| **reply** \<prompt\>            | Continue an on-going conversation with gpt3 or gpt4     |
+| **summarize**                   | Summarize the message replied to                        |
+| **poem**                        | Generate a poem of the message replied to               |
+| **tldr**                        | Generate reddit-like tl;dr of message replied to        |
+| **dalle** \[size\] \<prompt\>   | Generate an image using DALL·E of a given size          |
+| **diffuse** \[size\] \<prompt\> | Generate an image using stable diffusion webui          |
+| **sticker**                     | Turn an image into a sticker in-chat                    |
+| **sticker** \<prompt\>          | Generate a sticker given a prompt                       |
+| **qsticker**                    | Create 2x2 grid sticker of the image/sticker replied to |
+| **catsticker**                  | Generate a random cat sticker using public api          |
+| **reload**                      | Reload commands without stopping bot                    |
+| **debug**                       | Print bot object in console                             |
+| **stop**                        | Stop the bot                                            |
 
 ### Triggers
 The existence of certain keywords can trigger events. For example, if the word 'fire' is present in any message, the bot can react to it with the fire emoji.
@@ -45,6 +46,10 @@ To run the bot, you must create a file called `config.json` in the root director
     "OPENAI_ORG": "",
     "OPENAI_API_KEY": "",
     "prefix": "!",
+    "sdwebui": {
+        "host": "127.0.0.1",
+        "port": "7860"
+    },
     "naturalDelay": {
         "min": 1,
         "max": 3
