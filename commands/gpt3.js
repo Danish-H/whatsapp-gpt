@@ -39,6 +39,6 @@ module.exports.run = async (bot, msg, args) => {
 module.exports.help = {
     category: "ai",
     name: "gpt3",
-    aliases: ["chat", "ask", "q"],
+    aliases: ["chat", "c", "ask", "q"],
     args: "<prompt>"
 }
