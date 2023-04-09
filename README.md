@@ -25,7 +25,7 @@ Please note that this code is only meant for educational purposes, and any use o
 | **sticker** \<prompt\>          | Generate a sticker given a prompt                       |
 | **qsticker**                    | Create 2x2 grid sticker of the image/sticker replied to |
 | **catsticker**                  | Generate a random cat sticker using public api          |
-| **yt** \[v|a|s\] \<link\>       | Get YouTube video from link as video, audio or sticker  |
+| **yt** \[v\|a\|s\] \<link\>     | Get YouTube video from link as video, audio or sticker  |
 | **reload**                      | Reload commands without stopping bot                    |
 | **debug**                       | Print bot object in console                             |
 | **stop**                        | Stop the bot                                            |
