@@ -33,11 +33,12 @@ Please note that this code is only meant for educational purposes, and any use o
 The existence of certain keywords can trigger events. For example, if the word 'fire' is present in any message, the bot can react to it with the fire emoji.
 
 ## Requirements
-- openai@3.2.1
-- qrcode-terminal@0.12.0
 - whatsapp-web.js@1.19.5
-- sharp@0.32.0
-- color@4.2.3
+- qrcode-terminal@0.12.0
+- openai@3.2.1 (required for gpt3, gpt4, dalle, transcribe, etc.)
+- sharp@0.32.0 (required for qsticker)
+- color@4.2.3 (required for qsticker)
+- stable-diffusion-api@0.0.5 (required for diffuse)
 
 ## Configuration
 To run the bot, you must create a file called `config.json` in the root directory with content similar to the example below.
