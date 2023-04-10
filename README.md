@@ -21,7 +21,7 @@ Please note that this code is only meant for educational purposes, and any use o
 | **tldr**                        | Generate reddit-like tl;dr of message replied to        |
 | **dalle** \[size\] \<prompt\>   | Generate an image using DALL·E of a given size          |
 | **diffuse** \[size\] \<prompt\> | Generate an image using stable diffusion webui          |
-| **sticker**                     | Turn an image into a sticker in-chat                    |
+| **sticker**                     | Turn an image/video into a sticker in-chat              |
 | **sticker** \<prompt\>          | Generate a sticker given a prompt                       |
 | **qsticker**                    | Create 2x2 grid sticker of the image/sticker replied to |
 | **catsticker**                  | Generate a random cat sticker using public api          |
