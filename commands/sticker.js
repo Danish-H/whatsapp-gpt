@@ -1,6 +1,8 @@
 const config = require("../config.json");
 const utils = require("../utils.js");
 const ai = require("../ai.js");
+const fs = require("fs");
+const child_process = require('child_process');
 const { MessageMedia } = require('whatsapp-web.js');
 
 module.exports.run = async (bot, msg, args) => {
@@ -34,7 +36,26 @@ module.exports.run = async (bot, msg, args) => {
                 await utils.naturalDelay(bot);
                 await msg.react('⚠️');
             }
-        } else {
+        }
+
+        else if (quote.hasMedia && quote.type == "video") {
+            try {
+                const filename = msg.id.id;
+                const image = await quote.downloadMedia();
+                let buffer = Buffer.from(image.data, 'base64');
+                await fs.writeFileSync(`./.cache/${filename}.mp4`, buffer);
+                bot.processCount--;
+                await child_process.execSync(`/usr/bin/ffmpeg -i .cache/${filename}.mp4 -c:v libvpx -crf 15 -b:v 1M -c:a libvorbis .cache/${filename}.webm`);
+                const media = MessageMedia.fromFilePath(`.cache/${filename}.webm`);
+                await msg.reply(media, null, { sendMediaAsSticker: true });
+            } catch (error) {
+                console.error(`Error with WhatsApp: ${error}`);
+                await utils.naturalDelay(bot);
+                await msg.react('⚠️');                
+            }
+        }
+        
+        else {
             await utils.naturalDelay(bot);
             await msg.reply("That message doesn't contain an image")
         }
