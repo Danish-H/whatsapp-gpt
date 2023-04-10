@@ -5,8 +5,8 @@ const { Client, LocalAuth } = require('whatsapp-web.js');
 let config = require("./config.json");
 let utils = require("./utils.js");
 
-let clientConfig = { authStrategy: new LocalAuth() }
-if (config.chrome != "") clientConfig.puppeteer.executablePath = config.chrome;
+let clientConfig = { authStrategy: new LocalAuth() };
+if (config.chrome != "") clientConfig.puppeteer = { executablePath: config.chrome };
 
 const client = new Client(clientConfig);
 const bot = utils.bot;
