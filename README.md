@@ -53,8 +53,8 @@ To run the bot, you must create a file called `config.json` in the root director
     "sdwebui": {
         "host": "127.0.0.1",
         "port": "7860",
-        "negative_prompt": "nsfw",
-        "nsfw_prompt": "If the prompt sent by user is inappropriate then say \"NO\". If it is not inappropriate then say \"YES\". Make sure you do not say any word other than \"YES\" or \"NO\"."
+        "negative_prompt": "",
+        "nsfw_prompt": ""
     },
     "dm": {
         "enabled": true,
