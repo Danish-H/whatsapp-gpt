@@ -27,7 +27,8 @@ Please note that this code is only meant for educational purposes, and any use o
 | **catsticker**                  | Generate a random cat sticker using public api          |
 | **yt** \[v\|a\|s\] \<link\>     | Get YouTube video from link as video, audio or sticker  |
 | **reload**                      | Reload commands without stopping bot                    |
-| **debug**                       | Print bot object in console                             |
+| **purge** \<num\>               | Delete given number of messages in a group              |
+| **debug**                       | Print useful information                                |
 | **stop**                        | Stop the bot                                            |
 
 ### Triggers
