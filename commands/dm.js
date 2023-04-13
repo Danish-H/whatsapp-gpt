@@ -37,7 +37,7 @@ module.exports.run = async (bot, msg, args, author=msg.author?msg.author.slice(0
             const response = (await ai.getText(messages, "gpt-3.5-turbo", config.dm.max_tokens));
             const tokens = await old_tokens+response.completion_tokens;
             const chat = await msg.getChat();
-            let res = response.response.content();
+            let res = response.response.content;
 
             if (config.dm.humanize) {
                 res = res.toLowerCase();

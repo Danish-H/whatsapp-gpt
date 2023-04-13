@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Danish-H/whatsapp-gpt#readme",
   "dependencies": {
+    "canvas": "^2.11.2",
     "color": "^4.2.3",
     "openai": "^3.2.1",
     "qrcode-terminal": "^0.12.0",
