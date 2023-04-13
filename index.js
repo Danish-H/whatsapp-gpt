@@ -1,7 +1,7 @@
 console.log("Copyright 2023 Danish Humair. All rights reserved.\nThis program is only for educational purposes!\n");
 
 const qrcode = require('qrcode-terminal');
-const { Client, LocalAuth } = require('whatsapp-web.js');
+const { Client, LocalAuth, Buttons } = require('whatsapp-web.js');
 let config = require("./config.json");
 let utils = require("./utils.js");
 
@@ -21,7 +21,7 @@ client.on('ready', () => {
 });
 
 client.on('message_create', async msg => {
-    if (config.whitelist.length && !config.whitelist.includes(msg.author)) return;
+    if ((config.whitelist.length && !config.whitelist.includes(msg.author))) return;
 
     if (msg.body.startsWith(config.prefix)) {
         console.log("[!] Received potential command");
@@ -88,6 +88,18 @@ client.on('message_create', async msg => {
                 await msg.react('⚠️');
             }
         }
+    }
+
+    else if (config.dm.enabled && !msg.fromMe && msg.body.toLowerCase().includes(config.dm.trigger.toLowerCase()) && (await msg.getChat()).isGroup) {
+        let command = bot.commands.get("dm");
+        bot.processCount++;
+        command.run(bot, msg, msg.body.split(' '), msg.from);
+    }
+
+    else if (config.dm.enabled && !msg.fromMe && !(await msg.getChat()).isGroup) {
+        let command = bot.commands.get("dm");
+        bot.processCount++;
+        command.run(bot, msg, msg.body.split(' '));
     }
 });
 
