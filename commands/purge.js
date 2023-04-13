@@ -49,5 +49,5 @@ module.exports.help = {
     category: "tools",
     name: "purge",
     aliases: [],
-    args: ""
+    args: "<num>"
 }
