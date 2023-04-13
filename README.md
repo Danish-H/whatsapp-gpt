@@ -43,6 +43,7 @@ If enabled, the bot can directly communicate with users through gpt3 with a sepa
 - openai@3.2.1 (required for gpt3, gpt4, dalle, transcribe, etc.)
 - sharp@0.32.0 (required for qsticker)
 - color@4.2.3 (required for qsticker)
+- canvas@2.11.2 (required for debug)
 - stable-diffusion-api@0.0.5 (required for diffuse)
 
 ## Configuration
