@@ -32,7 +32,7 @@ client.on('message_create', async msg => {
         let command = bot.commands.get(cmd);
         if (command) {
             bot.processCount++;
-            if (config.enabled_commands.includes(command.help.name)) {
+            if (config.enabled_commands.includes("*") || config.enabled_commands.includes(command.help.name)) {
                 console.log(`[${msg.timestamp}] [CID:${msg.from}] [T:${msg.type}] [M:${msg.hasMedia}] ${msg.author}: ${msg.body}`);
                 command.run(bot, msg, args);
             } else {
