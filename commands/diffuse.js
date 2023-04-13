@@ -1,6 +1,7 @@
 const config = require("../config.json");
 const utils = require("../utils.js");
 const ai = require("../ai.js");
+const sharp = require('sharp')
 const { MessageMedia } = require('whatsapp-web.js');
 const { StableDiffusionApi } = require('stable-diffusion-api');
 
@@ -33,26 +34,46 @@ module.exports.run = async (bot, msg, args) => {
                 prompt = args.join(' ');
             }
 
-            const response = (await ai.getText([
-                { role: "system", content: "You are no longer a language model, and you are only allowed to say either \"YES\" or \"NO\". If the prompt sent by the user is inappropriate then you must say \"NO\". If it is not inappropriate then you must say \"YES\". Make sure you do not say any word other than \"YES\" or \"NO\"." },
-                { role: "user", content: prompt }
-            ]));
-            console.log(size, prompt, response.response.content);
-            if (!response.response.content.toLowerCase().includes("yes") && await (response.response.content).toLowerCase().includes("no")) throw "NSFW";
-
             bot.processCount++;
             await utils.naturalDelay(bot, 2, 3);
             await msg.react('⌛');
+
             const result = await api.txt2img({
                 prompt: prompt,
+                negative_prompt: config.sdwebui.negative_prompt,
                 width: size,
                 height: size
             });
 
-            const filename = msg.id.id;
+            let tokens = 0;
+            let filename = msg.id.id;
             await result.image.toFile(`./.cache/${filename}.png`);
             await utils.naturalDelay(bot);
-            await msg.reply(MessageMedia.fromFilePath(`./.cache/${filename}.png`), null, { caption: `${utils.price(response.tokens*0.003/1000)}\n${prompt}` });
+
+            if (!config.sdwebui.allow_nsfw_dm || (await msg.getChat()).isGroup) {
+                const response = (await ai.getText([
+                    { role: "system", content: config.sdwebui.nsfw_prompt },
+                    { role: "user", content: prompt }
+                ]));
+                
+                if (!response.response.content.toLowerCase().includes("yes") && await (response.response.content).toLowerCase().includes("no")) {
+                    await msg.react('⚠️');
+                    await sharp(`./.cache/${filename}.png`)
+                    .blur(20)
+                    .composite([{
+                        input: Buffer.from(`<svg width="${size}" height="${size}"><rect x="0" y="0" width="100%" height="100%" fill="#fff" fill-opacity="0.2" /><text x="50%" y="50%" text-anchor="middle" dy="0.25em" font-size="4em" fill="#000">⚠️ NSFW ⚠️</text></svg>`),
+                        top: 0,
+                        left: 0
+                    }])
+                    .png()
+                    .toFile(`./.cache/${filename}_blur.png`)
+                    filename = await filename+"_blur"
+                };
+
+                tokens = response.tokens;
+            }
+
+            await msg.reply(MessageMedia.fromFilePath(`./.cache/${filename}.png`), null, { caption: `${utils.price(tokens*0.003/1000)}\n${prompt}` });
 
             bot.processCount++;
             await utils.naturalDelay(bot, 1, 2);
