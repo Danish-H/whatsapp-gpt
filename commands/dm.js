@@ -34,7 +34,7 @@ module.exports.run = async (bot, msg, args, author=msg.author?msg.author.slice(0
         }
 
         try {
-            const response = (await ai.getText(messages, "gpt-3.5-turbo", Math.min(Math.round(4*message.length*3), 1500)));
+            const response = (await ai.getText(messages, "gpt-3.5-turbo", Math.min(Math.round(0.25*message.length*3), 1500)));
             const tokens = await old_tokens+response.completion_tokens;
             const chat = await msg.getChat();
             let res = response.response.content;
