@@ -34,6 +34,9 @@ Please note that this code is only meant for educational purposes, and any use o
 ### Triggers
 The existence of certain keywords can trigger events. For example, if the word 'fire' is present in any message, the bot can react to it with the fire emoji.
 
+### Chatting
+If enabled, the bot can directly communicate with users through gpt3 with a separate initial prompt. It can do this unprompted in private messages, or if called by a given name in a group. It can also retain a given number of messages in its memory along with their individual authors.
+
 ## Requirements
 - whatsapp-web.js@1.19.5
 - qrcode-terminal@0.12.0
