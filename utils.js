@@ -5,14 +5,14 @@ const randomDelay = function(min, max) {
     return Math.round(min*1000+(Math.random()*(max-min)*1000));
 }
 
-const naturalDelay = async function(bot={processCount: 0}, min=config.naturalDelay.min, max=config.naturalDelay.max) {
+const naturalDelay = async function(bot={processCount: 0}, min=config.naturalDelay.min, max=config.naturalDelay.max, silent=false) {
     return new Promise(resolve => {
         const delay = randomDelay(min, max)*bot.processCount;
         const process = bot.processCount;
-        console.log(`(Process ${process}) Starting ${delay}ms delay...`);
+        if (!silent) console.log(`(Process ${process}) Starting ${delay}ms delay...`);
         bot.processHistory.push([Date.now(), bot.processCount]);
         setTimeout(() => {
-            console.log(`(Process ${process}) Finished ${delay}ms delay!`);
+            if (!silent) console.log(`(Process ${process}) Finished ${delay}ms delay!`);
             bot.processCount--;
             bot.processHistory.push([Date.now(), bot.processCount]);
             if (bot.processCount < 0) bot.processCount = 0;
