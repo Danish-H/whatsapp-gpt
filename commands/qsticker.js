@@ -20,7 +20,7 @@ module.exports.run = async (bot, msg, args) => {
                 let w = Math.floor(sz/2);
     
                 imgBuffer = await img.resize(sz, sz, { fit: 'contain' } ).toBuffer();
-                if (args[0] == "fit") { imgBuffer = await img.resize(sz, sz, { fit: 'cover' } ).toBuffer(); }
+                if (args[0] == "cover") { imgBuffer = await img.resize(sz, sz, { fit: 'cover' } ).toBuffer(); }
                 let images = [];
                 images.push(await sharp(imgBuffer).extract( {left: 0, top: 0, width: w, height: w} ).toBuffer());
                 images.push(await sharp(imgBuffer).extract( {left: w, top: 0, width: w, height: w} ).toBuffer());
