@@ -29,5 +29,5 @@ module.exports.help = {
     category: "tools",
     name: "delete",
     aliases: [],
-    args: "<num>"
+    args: ""
 }
