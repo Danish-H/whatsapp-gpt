@@ -5,13 +5,22 @@ module.exports.run = async (bot, msg, args) => {
     if (args[0]) {
         try {
             const chat = await msg.getChat();
-            if (!chat.isGroup) throw "NOT GROUP";
+            if (!chat.isGroup) {
+                await utils.naturalDelay(bot);
+                await msg.react('❔');
+            }
 
             let admin = false;
             await chat.participants.forEach(p => { if (p.id._serialized == msg.author && (p.isAdmin || p.isSuperAdmin)) admin = true; });
-            if (!admin) throw "NOT ADMIN";
+            if (!admin) {
+                await utils.naturalDelay(bot);
+                await msg.react('🚫');
+            }
 
-            if (parseInt(args[0]) > 20) throw "TOO MANY MESSAGES";
+            if (parseInt(args[0]) > 20) {
+                await utils.naturalDelay(bot);
+                await msg.react('😵‍💫');
+            }
 
             const messages = await chat.fetchMessages({ limit: parseInt(args[0]) });
             while (messages.length) {
@@ -26,7 +35,7 @@ module.exports.run = async (bot, msg, args) => {
         catch (error) {
             console.error(`Error with WhatsApp: ${error}`);
             await utils.naturalDelay(bot);
-            await msg.react('⚠️');            
+            await msg.react('⚠️');
         }
     }
     
