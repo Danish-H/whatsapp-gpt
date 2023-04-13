@@ -10,9 +10,11 @@ const naturalDelay = async function(bot={processCount: 0}, min=config.naturalDel
         const delay = randomDelay(min, max)*bot.processCount;
         const process = bot.processCount;
         console.log(`(Process ${process}) Starting ${delay}ms delay...`);
+        bot.processHistory.push([Date.now(), bot.processCount]);
         setTimeout(() => {
             console.log(`(Process ${process}) Finished ${delay}ms delay!`);
             bot.processCount--;
+            bot.processHistory.push([Date.now(), bot.processCount]);
             if (bot.processCount < 0) bot.processCount = 0;
             resolve();
         }, delay);
@@ -27,6 +29,7 @@ const bot = {
     commands: null,
     help: null,
     processCount: 0,
+    processHistory: [],
     loadCommands: null,
     messagesList: new Map(),
     stickerQueue: []

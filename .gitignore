@@ -2,3 +2,4 @@ config.json
 node_modules/
 .wwebjs_auth/
 .cache/
+yt-dlp

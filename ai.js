@@ -8,12 +8,13 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration);
 
-const getText = async function(messages, model="gpt-3.5-turbo") {
+const getText = async function(messages, model="gpt-3.5-turbo", max_tokens=Infinity) {
     try {
         console.log("[!] Starting text generation...")
         const response = await openai.createChatCompletion({
             model: model,
-            messages: messages
+            messages: messages,
+            max_tokens: max_tokens
         });
         await console.log("[!] Finished text generation!")
         return {
