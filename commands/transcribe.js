@@ -20,7 +20,7 @@ module.exports.run = async (bot, msg, args) => {
         }
         
         const quote = await msg.getQuotedMessage();
-        if (!quote.hasMedia || !(quote.type == "audio" || quote.type == "voice" || quote.type == "ptt")) {
+        if (!quote.hasMedia || !(quote.type == "audio" || quote.type == "voice" || quote.type == "ptt" || quote.type == "video")) {
             await utils.naturalDelay();
             await msg.reply("That message doesn't contain any audio! Please use *!help* for more information.");
             return;
