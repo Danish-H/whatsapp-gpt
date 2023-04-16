@@ -8,6 +8,7 @@ module.exports.run = async (bot, msg, args) => {
             if (!chat.isGroup) {
                 await utils.naturalDelay(bot);
                 await msg.react('❔');
+                return;
             }
 
             let admin = false;
@@ -18,11 +19,11 @@ module.exports.run = async (bot, msg, args) => {
                 return;
             }
 
-if (parseInt(args[0]) > 20) {
-    await utils.naturalDelay(bot);
-    await msg.react('😵‍💫');
-    return;
-}
+            if (parseInt(args[0]) > 20) {
+                await utils.naturalDelay(bot);
+                await msg.react('😵‍💫');
+                return;
+            }
 
             const messages = await chat.fetchMessages({ limit: parseInt(args[0]) });
             while (messages.length) {
