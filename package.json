@@ -1,28 +1,16 @@
 {
-  "name": "whatsapp-gpt",
-  "version": "1.0.0",
-  "description": "Simple WhatsApp bot which works with OpenAI API written in Node.js",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Danish-H/whatsapp-gpt.git"
-  },
-  "author": "Danish-H",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Danish-H/whatsapp-gpt/issues"
-  },
-  "homepage": "https://github.com/Danish-H/whatsapp-gpt#readme",
   "dependencies": {
-    "canvas": "^2.11.2",
-    "color": "^4.2.3",
-    "openai": "^3.2.1",
     "qrcode-terminal": "^0.12.0",
-    "sharp": "^0.32.0",
-    "stable-diffusion-api": "^0.0.5",
-    "whatsapp-web.js": "^1.19.5"
-  }
+    "whatsapp-web.js": "^1.23.0"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "name": "whatsapp-gpt",
+  "version": "2.0.0",
+  "description": "Bringing access of LLMs to LLUs (Low-Literacy Users)",
+  "main": "index.js",
+  "repository": "git@github.com:Danish-H/WhatsApp-GPT.git",
+  "author": "Danish-H <me@danishhumair.com>",
+  "license": "MIT"
 }
