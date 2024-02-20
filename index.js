@@ -22,26 +22,43 @@ client.on('ready', () => {
 
 client.on('message_create', async msg => {
     if ((config.whitelist.length && !config.whitelist.includes(msg.author))) return;
+    if (msg.body.endsWith("🤖") && msg.fromMe) return;
+    if (await msg.getChat().isGroup) return;
+
+    const [cmd, ...args] = [msg.type, msg.id, msg.body]
+    const sender = msg.author ? msg.author.slice(0, 12) : msg.from.slice(0, 12);
+    console.log(`[${msg.timestamp}] [CID:${msg.from}] [T:${msg.type}] [M:${msg.hasMedia}] ${msg.author}: ${msg.body}`);
+
+    if (msg.hasMedia) {
+        try {
+            console.log("[!] Received media")
+            bot.processCount++;
+            media = await msg.downloadMedia();
+            args.push(media);
+        } catch (error) {
+            console.error(`Error with WhatsApp: ${error}`);
+            await utils.naturalDelay(bot);
+            await msg.react('⚠️');
+            
+            return;
+        }
+    }
+
+    let command = bot.commands.get("cmd");
+    if (command) {
+        bot.processCount++;
+        if (config.enabled_commands.includes("*") || config.enabled_commands.includes(command.help.name)) {
+            command.run(bot, msg, args);
+        } else {
+            await utils.naturalDelay(bot);
+            await msg.react('🚫')
+        }
+    }
 
     if (msg.body.startsWith(config.prefix)) {
         console.log("[!] Received potential command");
-        const [cmd, ...args] = msg.body.replace(config.prefix, '').split(' ');
-        const sender = msg.author ? msg.author.slice(0, 12) : msg.from.slice(0, 12);
-        console.log("Command: "+cmd+"\tArgs: "+(args.length ? args.join(' ')     : "None"));
-
-        let command = bot.commands.get(cmd);
-        if (command) {
-            bot.processCount++;
-            if (config.enabled_commands.includes("*") || config.enabled_commands.includes(command.help.name)) {
-                console.log(`[${msg.timestamp}] [CID:${msg.from}] [T:${msg.type}] [M:${msg.hasMedia}] ${msg.author}: ${msg.body}`);
-                command.run(bot, msg, args);
-            } else {
-                await utils.naturalDelay(bot);
-                await msg.react('🚫')
-            }
-        }
         
-        else if (cmd == "reload" && config.ops.includes(sender)) {
+        if (cmd == "reload" && config.ops.includes(sender)) {
             bot.processCount = 1;
             delete require.cache[require.resolve("./config.json")];
             delete require.cache[require.resolve("./utils.js")];
@@ -71,35 +88,6 @@ client.on('message_create', async msg => {
             await utils.naturalDelay(bot);
             await msg.react('🤨');
         }
-    }
-
-    else if (msg.hasMedia) {
-        if (msg.type == "image" && bot.stickerQueue.includes(msg.author)) {
-            bot.stickerQueue.splice(bot.stickerQueue.indexOf(msg.author), 1);
-            console.log("[!] Received image for sticker");
-            bot.processCount++;
-            try {
-                const image = await msg.downloadMedia();
-                await utils.naturalDelay(bot);
-                await msg.reply(image, null, { sendMediaAsSticker: true });
-            } catch (error) {
-                console.error(`Error with WhatsApp: ${error}`);
-                await utils.naturalDelay(bot);
-                await msg.react('⚠️');
-            }
-        }
-    }
-
-    else if (config.dm.enabled && !msg.fromMe && msg.body.toLowerCase().includes(config.dm.trigger.toLowerCase()) && (await msg.getChat()).isGroup) {
-        let command = bot.commands.get("dm");
-        bot.processCount++;
-        command.run(bot, msg, msg.body.split(' '), msg.from);
-    }
-
-    else if (config.dm.enabled && !msg.fromMe && !(await msg.getChat()).isGroup) {
-        let command = bot.commands.get("dm");
-        bot.processCount++;
-        command.run(bot, msg, msg.body.split(' '));
     }
 });
 
