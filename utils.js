@@ -37,15 +37,15 @@ const bot = {
 
 bot.loadCommands = function() {
     bot.commands = new Map();
-    fs.readdir("./commands/", (err, files) => {
+    fs.readdir("./types/", (err, files) => {
         if (err) return console.log(err);
         let jsfile = files.filter(f => f.split(".").pop() == "js");
         bot.help = "No commands were found!"
         if (jsfile.length <= 0) return console.log("No commands were discovered.");
         bot.help = "Commands you can use:\n\n";
         jsfile.forEach((f, i) => {
-            delete require.cache[require.resolve(`./commands/${f}`)]
-            let props = require(`./commands/${f}`);
+            delete require.cache[require.resolve(`./types/${f}`)]
+            let props = require(`./types/${f}`);
             console.log(`[${i+1}] ${f} was discovered.`);
             bot.commands.set(props.help.name, props);
             props.help.aliases.forEach(name => bot.commands.set(name, props));

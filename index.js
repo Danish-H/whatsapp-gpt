@@ -21,44 +21,22 @@ client.on('ready', () => {
 });
 
 client.on('message_create', async msg => {
-    if ((config.whitelist.length && !config.whitelist.includes(msg.author))) return;
+    const sender = msg.author ? msg.author.slice(0, 12) : msg.from.slice(0, 12);
+    console.log("Received message from " + sender);
+
+    if ((config.whitelist.length && !config.whitelist.includes(sender))) return;
     if (msg.body.endsWith("🤖") && msg.fromMe) return;
     if (await msg.getChat().isGroup) return;
 
     const [cmd, ...args] = [msg.type, msg.id, msg.body]
-    const sender = msg.author ? msg.author.slice(0, 12) : msg.from.slice(0, 12);
     console.log(`[${msg.timestamp}] [CID:${msg.from}] [T:${msg.type}] [M:${msg.hasMedia}] ${msg.author}: ${msg.body}`);
-
-    if (msg.hasMedia) {
-        try {
-            console.log("[!] Received media")
-            bot.processCount++;
-            media = await msg.downloadMedia();
-            args.push(media);
-        } catch (error) {
-            console.error(`Error with WhatsApp: ${error}`);
-            await utils.naturalDelay(bot);
-            await msg.react('⚠️');
-            
-            return;
-        }
-    }
-
-    let command = bot.commands.get("cmd");
-    if (command) {
-        bot.processCount++;
-        if (config.enabled_commands.includes("*") || config.enabled_commands.includes(command.help.name)) {
-            command.run(bot, msg, args);
-        } else {
-            await utils.naturalDelay(bot);
-            await msg.react('🚫')
-        }
-    }
 
     if (msg.body.startsWith(config.prefix)) {
         console.log("[!] Received potential command");
+
+        const cmd_wo_prefix = cmd.slice(config.prefix.length);
         
-        if (cmd == "reload" && config.ops.includes(sender)) {
+        if (cmd_wo_prefix == "reload" && config.ops.includes(sender)) {
             bot.processCount = 1;
             delete require.cache[require.resolve("./config.json")];
             delete require.cache[require.resolve("./utils.js")];
@@ -71,22 +49,48 @@ client.on('message_create', async msg => {
             await msg.react('✅');
         }
 
-        else if (cmd == "debug" && config.ops.includes(sender)) {
+        else if (cmd_wo_prefix == "debug" && config.ops.includes(sender)) {
             bot.processCount++;
             console.log(bot);
             await utils.naturalDelay(bot);
             await msg.react('✅');
         }
 
-        else if (cmd == "stop" && config.ops.includes(sender)) {
+        else if (cmd_wo_prefix == "stop" && config.ops.includes(sender)) {
             await utils.naturalDelay(bot);
             await msg.react('👋');
             await process.exit();
         }
 
-        else if (("reload", "debug", "stop").includes(cmd) && !config.ops.includes(sender)) {
+        else if (("reload", "debug", "stop").includes(cmd_wo_prefix) && !config.ops.includes(sender)) {
             await utils.naturalDelay(bot);
             await msg.react('🤨');
+        }
+
+        return;
+    }
+
+    if (msg.hasMedia) {
+        try {
+            console.log("[!] Received media")
+            bot.processCount++;
+            media = await msg.downloadMedia();
+            args.push(media);
+        } catch (error) {
+            console.error(`Error with WhatsApp: ${error}`);
+            await utils.naturalDelay(bot);
+            await msg.react('⚠️');
+        }
+    }
+
+    let command = bot.commands.get(cmd);
+    if (command) {
+        bot.processCount++;
+        if (config.enabled_commands.includes("*") || config.enabled_commands.includes(command.help.name)) {
+            command.run(bot, msg, args);
+        } else {
+            await utils.naturalDelay(bot);
+            await msg.react('🚫')
         }
     }
 });

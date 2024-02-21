@@ -1,26 +1,22 @@
 const config = require("./config.json");
-const { Configuration, OpenAIApi } = require("openai");
+const { OpenAI } = require("openai");
 
-const configuration = new Configuration({
-    organization: config.OPENAI_ORG,
-    apiKey: config.OPENAI_API_KEY,
-});
-
-const openai = new OpenAIApi(configuration);
+const openai = new OpenAI({ apiKey: config.OPENAI_API_KEY });
 
 const getText = async function(messages, model="gpt-3.5-turbo", max_tokens=Infinity) {
     try {
         console.log("[!] Starting text generation...")
-        const response = await openai.createChatCompletion({
+        const response = await openai.chat.completions.create({
             model: model,
             messages: messages,
             max_tokens: max_tokens
         });
         await console.log("[!] Finished text generation!")
+        console.log(response.choices[0])
         return {
-            response: response.data.choices[0].message,
-            tokens: response.data.usage.total_tokens,
-            completion_tokens: response.data.usage.completion_tokens
+            response: response.choices[0].message,
+            tokens: response.usage.total_tokens,
+            completion_tokens: response.usage.completion_tokens
         }
     } catch(error) {
         if (error.response) console.error(error.response.status, error.response.data);
